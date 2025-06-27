@@ -4,6 +4,9 @@
  */
 package Buoi2;
 
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author nguye
@@ -15,7 +18,60 @@ public class QLHV extends javax.swing.JFrame {
      */
     public QLHV() {
         initComponents();
+        setLocationRelativeTo(null);
     }
+    
+    //1. Khai báo danh sách sinh viên list
+    ArrayList<Student> list = new ArrayList<>();
+    
+    //2. Viết riêng ra hàm thêm sinh viên
+    public void addSinhVien(){
+        //1. Tạo đối tượng sinh viên
+        Student stu= new Student();
+        //2. Gán giá trị trên các controls vào đối tượng stu
+        stu.name= txtHoTen.getText();
+        stu.marks=Double.parseDouble( txtDiem.getText());
+        stu.course = (String)cboKhoaHoc.getSelectedItem();
+        //3.Thêm vào danh sách sinh viên list
+        list.add(stu);
+        //4.Hiển thi học lực ra txtHocLuc
+        txtXepLoai.setText(stu.getGrade());
+        //5.Hiển thị check thưởng
+        chkThuong.setSelected(stu.isBonus());
+    }
+    //3.Hiển thị dữ liệu lên bảng
+    public void fillToTable(){
+        //1.Lấy mô hình dữ liệu bảng
+         DefaultTableModel model = new DefaultTableModel();
+        model = (DefaultTableModel)tblHocViens.getModel();
+        //2. Xóa sạch các dòng của bảng vì nó sẽ bị đè giữ liệu lưu ở model cũ
+        model.setRowCount(0);
+        //3. Duyệt danh sách sinh viên list và thêm vào bảng
+        for(Student stu: list){
+             //4.tạo row
+            Object[] row = new Object[]{stu.name, stu.marks, stu.marks, stu.getGrade(),
+                stu.isBonus()};
+                //5.thêm vào model
+            model.addRow(row);
+
+
+        }
+    }
+    public void showDetail() {
+        // 1. Xác định vị trí dòng đang được chọn trong bảng
+        int index = tblHocViens.getSelectedRow();
+
+        // 2. Lấy đối tượng sinh viên tại dòng index trong danh sách
+        Student stu = list.get(index);
+
+        // 3. Hiển thị thông tin sinh viên stu lên các control
+        txtHoTen.setText(stu.name);
+        txtDiem.setText("" + stu.marks);
+        cboKhoaHoc.setSelectedItem(stu.course);
+        txtXepLoai.setText(stu.getGrade());
+        chkThuong.setSelected(stu.isBonus());
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -71,6 +127,11 @@ public class QLHV extends javax.swing.JFrame {
         chkThuong.setText("Có phần thưởng");
 
         btnThem.setText("Thêm");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
 
         btnCapNhat.setText("Cập nhật");
 
@@ -99,6 +160,11 @@ public class QLHV extends javax.swing.JFrame {
                 "Họ tên", "Điểm", "Khóa học", "Học lực", "Thưởng"
             }
         ));
+        tblHocViens.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblHocViensMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblHocViens);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -207,6 +273,18 @@ public class QLHV extends javax.swing.JFrame {
            
         
     }//GEN-LAST:event_btnNhapMoiActionPerformed
+
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+      //gọi hàm thêm sv
+        addSinhVien();
+        //hiển thị dữ liệu lên bảng
+       fillToTable();
+    }//GEN-LAST:event_btnThemActionPerformed
+
+    private void tblHocViensMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHocViensMouseClicked
+        //gọi hàm hiển thị
+        showDetail();
+    }//GEN-LAST:event_tblHocViensMouseClicked
 
     /**
      * @param args the command line arguments

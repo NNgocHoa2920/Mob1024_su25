@@ -5,6 +5,8 @@
 package Buoi2_Lab02;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -21,7 +23,8 @@ public class QLHV extends javax.swing.JFrame {
         setLocationRelativeTo(null); // hàm này sẽ cho form ra giữa màn hình , cái này biết thêm thôi
     }
     //1. KHAI BÁO DANH SÁCH SINH VIÊN THEO DẠNG LIST
-    ArrayList<Student> list = new ArrayList<>();
+    ArrayList<Student> list = new ArrayList<>();// list này là toàn bộ danh sách sinh viên trong bảng
+    int index;
     
     //2. Viết riêng hàm thêm sinh viên
     public void addSinhVien(){
@@ -56,6 +59,78 @@ public class QLHV extends javax.swing.JFrame {
         }
         
     }
+    
+    //4. Hiển thị đối tượng trong bảng lên các ô control
+    public void showDetail(){
+        //1. XÁC định vị trí dòng đang được chọn trong bảng
+        index = tblHocViens.getSelectedRow();
+        //2. Lấy đối tượng sinh viên tại dòng index trong bảng
+        Student stu = list.get(index);
+        
+        //3. Hiển thị thông tin sinh viên lên controls
+        txtHoVaTen.setText(stu.name);
+        txtDiem.setText(""+ stu.marks);
+        cboKhoaHoc.setSelectedItem(stu.course);
+        txtXepLoai.setText(stu.getGrade());
+        chkThuong.setSelected(stu.isBonus());
+        
+    }
+    //4.HÀM XÓA SINH VIÊN ĐANG CHỌN
+    public void removeStudent(){
+        //1. Xác định vị trí index cần xóa
+         index = tblHocViens.getSelectedRow();
+         //2. Xóa sinh viên tại vị trí index đó
+         list.remove(index);
+        
+    }
+    //5. Update sinh viên
+    public void updateStudent() {
+        //1. Xác định đối tượng sv cần sửa ( xác định vị trí index cần sửa)
+        index = tblHocViens.getSelectedRow();
+        //2. Lấy ra đối tượng cần sửa tại vị trí index đã chọn
+        Student stu = list.get(index);
+        //3. Cập nhật thông tin
+        stu.name = txtHoVaTen.getText();
+        stu.marks = Double.parseDouble(txtDiem.getText()); // phải convert dữ liệu vì dữ liệu mình nhập máy tính luôn nhận ở dạng string mà điểm ở dạng double
+        stu.course = (String) cboKhoaHoc.getSelectedItem();
+        //4.Hiển thị xếp loại
+        txtXepLoai.setText(stu.getGrade());
+        //5. Hiện thị check thưởng
+        chkThuong.setSelected(stu.isBonus());
+
+    }
+    //6.Sắp xếp theo diem
+    public void orderByMarks(){
+        //cách 1: sử dụng list.sort
+        list.sort((st1,st2)-> Double.compare(st1.marks, st2.marks));
+        //cách 2: sử dụng comparetor
+//        Comparator<Student> com = new Comparator<>(){
+//            //ghi đè compare
+//            @Override
+//            public int compare(Student o1, Student o2){
+//                //lấy giá trị marks
+//                double d1 = o1.marks;
+//                double d2= o2.marks;
+//                //trả về giá trị so sánh
+//                return Double.compare(d1,d2);
+//            }
+//        };
+//        Collections.sort(list, com);
+    }
+    //Sắp xếp theo tên
+    public void orderName(){
+        Comparator<Student> com = new Comparator<Student>(){
+            
+           //ghi đè comperator
+            @Override
+            public int compare(Student o1, Student o2){
+                return o1.name.compareTo(o2.name);
+            }
+        };
+        //gọi hàm sort
+        Collections.sort(list,com);
+        
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -81,6 +156,8 @@ public class QLHV extends javax.swing.JFrame {
         btnNhapMoi = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblHocViens = new javax.swing.JTable();
+        btnSXTheoDiem = new javax.swing.JButton();
+        btnSXTheoTen = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("QUẢN LÍ HỌC VIÊN");
@@ -115,8 +192,18 @@ public class QLHV extends javax.swing.JFrame {
         });
 
         btnCapNhat.setText("Cập nhật");
+        btnCapNhat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCapNhatActionPerformed(evt);
+            }
+        });
 
         btnXoa.setText("Xóa");
+        btnXoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaActionPerformed(evt);
+            }
+        });
 
         btnNhapMoi.setText("Nhập mới");
         btnNhapMoi.addActionListener(new java.awt.event.ActionListener() {
@@ -136,7 +223,26 @@ public class QLHV extends javax.swing.JFrame {
                 "HỌ VÀ TÊN", "ĐIỂM", "KHÓA HỌC", "XẾP LOẠI", "THƯỞNG"
             }
         ));
+        tblHocViens.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblHocViensMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblHocViens);
+
+        btnSXTheoDiem.setText("sx theo điểm");
+        btnSXTheoDiem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSXTheoDiemActionPerformed(evt);
+            }
+        });
+
+        btnSXTheoTen.setText("sx theo ten");
+        btnSXTheoTen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSXTheoTenActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -166,35 +272,43 @@ public class QLHV extends javax.swing.JFrame {
                                     .addComponent(txtHoVaTen)
                                     .addComponent(txtDiem)
                                     .addComponent(cboKhoaHoc, 0, 319, Short.MAX_VALUE)
-                                    .addComponent(txtXepLoai)))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 632, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtXepLoai))
+                                .addGap(34, 34, 34)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnSXTheoDiem)
+                                    .addComponent(btnSXTheoTen)))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(225, 225, 225)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(150, 150, 150)
-                        .addComponent(chkThuong, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(15, Short.MAX_VALUE))
+                        .addComponent(chkThuong, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 632, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jLabel1)
-                .addGap(37, 37, 37)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblHoVaTen)
-                    .addComponent(txtHoVaTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblHoVaTen)
+                            .addComponent(txtHoVaTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addComponent(btnSXTheoDiem)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblDiem)
                     .addComponent(txtDiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblKhoaHoc)
-                    .addComponent(cboKhoaHoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cboKhoaHoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSXTheoTen))
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblXepLoai)
@@ -234,6 +348,37 @@ public class QLHV extends javax.swing.JFrame {
         chkThuong.setSelected(false);
     }//GEN-LAST:event_btnNhapMoiActionPerformed
 
+    private void tblHocViensMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHocViensMouseClicked
+        // TODO add your handling code here:
+        //gọi hàm hiển thị
+        //LƯU Ý: NẾU K BẬT EVENT CHO BẢNG THÌ SẼ K CÓ HÀM NÀY VÀ CŨNG K HOẠT ĐỘNG ĐƯỢC
+        showDetail();
+    }//GEN-LAST:event_tblHocViensMouseClicked
+
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
+        //gọi hàm xóa vào đây
+        removeStudent();// xóa logic
+        fillToTable();// gọi lại hàm filltoTable để load lại bảng
+    }//GEN-LAST:event_btnXoaActionPerformed
+
+    private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
+        // TODO add your handling code here:
+        updateStudent();
+        fillToTable();
+    }//GEN-LAST:event_btnCapNhatActionPerformed
+
+    private void btnSXTheoDiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSXTheoDiemActionPerformed
+        // TODO add your handling code here:
+        orderByMarks();
+        fillToTable();
+    }//GEN-LAST:event_btnSXTheoDiemActionPerformed
+
+    private void btnSXTheoTenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSXTheoTenActionPerformed
+        // TODO add your handling code here:
+        orderName();
+        fillToTable();
+    }//GEN-LAST:event_btnSXTheoTenActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -272,6 +417,8 @@ public class QLHV extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCapNhat;
     private javax.swing.JButton btnNhapMoi;
+    private javax.swing.JButton btnSXTheoDiem;
+    private javax.swing.JButton btnSXTheoTen;
     private javax.swing.JButton btnThem;
     private javax.swing.JButton btnXoa;
     private javax.swing.JComboBox<String> cboKhoaHoc;

@@ -49,7 +49,7 @@ public class QLHV extends javax.swing.JFrame {
         //3. Duyệt danh sách sinh viên list và thêm vào bảng
         for(Student stu: list){
              //4.tạo row
-            Object[] row = new Object[]{stu.name, stu.marks, stu.marks, stu.getGrade(),
+            Object[] row = new Object[]{stu.name, stu.marks, stu.course, stu.getGrade(),
                 stu.isBonus()};
                 //5.thêm vào model
             model.addRow(row);
@@ -71,7 +71,30 @@ public class QLHV extends javax.swing.JFrame {
         txtXepLoai.setText(stu.getGrade());
         chkThuong.setSelected(stu.isBonus());
     }
-
+    //HÀM XÓA SINH VIÊN ĐANG CHỌN
+    public void removeStudent(){
+        //1.Xác định vị trí index cần xóa
+        int index = tblHocViens.getSelectedRow();
+        //2. Xóa sinh viên tại vị trí index đó
+        list.remove(index);
+        
+    }
+    //Hàm update
+    public void updateStudent(){
+        //1. Xác định vị trí indẽ cần sửa
+        //1.Xác định vị trí index cần xóa
+        int index = tblHocViens.getSelectedRow();
+        //2. Lấy ra đối tượng sinh viên tại vị trí index
+        Student stu = list.get(index);
+        //3. Cập nhật thông tin
+         stu.name= txtHoTen.getText();
+        stu.marks=Double.parseDouble( txtDiem.getText());
+        stu.course = (String)cboKhoaHoc.getSelectedItem();
+        //hIỂN THỊ HỌC LỰC
+         txtXepLoai.setText(stu.getGrade());
+        //5.Hiển thị check thưởng
+        chkThuong.setSelected(stu.isBonus());
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -134,6 +157,11 @@ public class QLHV extends javax.swing.JFrame {
         });
 
         btnCapNhat.setText("Cập nhật");
+        btnCapNhat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCapNhatActionPerformed(evt);
+            }
+        });
 
         btnXoa.setText("Xóa");
         btnXoa.addActionListener(new java.awt.event.ActionListener() {
@@ -259,7 +287,10 @@ public class QLHV extends javax.swing.JFrame {
     }//GEN-LAST:event_txtHoTenActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
-        // TODO add your handling code here:
+       //1. Gọi hàm xóa
+       removeStudent();
+       //2. NHớ gọi lại hàm hiển thị dữ liệu 
+       fillToTable();
     }//GEN-LAST:event_btnXoaActionPerformed
 //NHẬP MỚI
     private void btnNhapMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNhapMoiActionPerformed
@@ -285,6 +316,12 @@ public class QLHV extends javax.swing.JFrame {
         //gọi hàm hiển thị
         showDetail();
     }//GEN-LAST:event_tblHocViensMouseClicked
+
+    private void btnCapNhatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCapNhatActionPerformed
+        // TODO add your handling code here:
+        updateStudent();
+        fillToTable();
+    }//GEN-LAST:event_btnCapNhatActionPerformed
 
     /**
      * @param args the command line arguments

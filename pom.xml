@@ -24,4 +24,12 @@
         <maven.compiler.release>21</maven.compiler.release>
         <exec.mainClass>com.mycompany.demo_mob1024_hl_su25.Demo_MOB1024_HL_SU25</exec.mainClass>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>12.10.1.jre11</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 </project>

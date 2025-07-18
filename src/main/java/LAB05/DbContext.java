@@ -12,6 +12,8 @@ import java.sql.*;
  *
  * @author nguye
  */
+
+//THẰNG DBCONTEXT: ĐẠI DIỆN CHO SQL SERVER Ở TRONG NEATBEAN
 public class DbContext {
     //lưu ý: điền đúng pass
     private static final String userName = "sa";

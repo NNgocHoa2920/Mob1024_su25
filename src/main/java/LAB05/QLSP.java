@@ -6,6 +6,8 @@ package LAB05;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -21,9 +23,11 @@ public class QLSP extends javax.swing.JFrame {
       SanPhamDao spdao = new SanPhamDao();
     LoaiSanPhamDao lspDao = new LoaiSanPhamDao();
     List<SanPham> listSanPhams = new ArrayList<>();
+   
     public QLSP() {
         initComponents();
         loadDataToTable();
+        loadDataComboBox();
     }
 
     //hàm load dữ liệu lên bảng
@@ -42,6 +46,28 @@ public class QLSP extends javax.swing.JFrame {
         tblSanPhams.setModel(tblModel);
 
     }
+     
+     //HÀM LOAD COMBOX
+     public void loadDataComboBox(){
+         List<LoaiSanPham> loaiSanPhams = lspDao.getAllLoaiSanPham();
+         DefaultComboBoxModel  model = (DefaultComboBoxModel) cboLoai.getModel();
+         model.removeAllElements(); // xóa các phần tử có sẵn trong combobox
+         for(LoaiSanPham loaiSanPham : loaiSanPhams){
+             model.addElement(loaiSanPham);
+         }
+     }
+     
+     //HÀM LẤY THÔNG TIN TỪ CÁC CONTROL BÊN PHẢI( Ở CÁC Ô TEXT)
+     public SanPham getForm(){
+        SanPham sp = new SanPham();
+        sp.setMaSanPham(txtMa.getText());
+        sp.setTenSP(txtTen.getText());
+        sp.setDonGia(Double.valueOf(txtDonGia.getText()));
+        sp.setSoLuong(Integer.valueOf(txtSoluong.getText()));
+        sp.setLoaiSanPham((LoaiSanPham) cboLoai.getSelectedItem());
+        return sp;
+        
+     }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -59,10 +85,10 @@ public class QLSP extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnThem = new javax.swing.JButton();
+        btnSua = new javax.swing.JButton();
+        btnXoa = new javax.swing.JButton();
+        btnLamMoi = new javax.swing.JButton();
         cboLoai = new javax.swing.JComboBox<>();
         txtMa = new javax.swing.JTextField();
         txtTen = new javax.swing.JTextField();
@@ -113,13 +139,23 @@ public class QLSP extends javax.swing.JFrame {
 
         jLabel4.setText("Số lượng");
 
-        jButton1.setText("jButton1");
+        btnThem.setText("Thêm");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("jButton2");
+        btnSua.setText("Sửa");
 
-        jButton3.setText("jButton3");
+        btnXoa.setText("Xóa");
 
-        jButton4.setText("jButton4");
+        btnLamMoi.setText("Làm mới");
+        btnLamMoi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLamMoiActionPerformed(evt);
+            }
+        });
 
         cboLoai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cboLoai.addActionListener(new java.awt.event.ActionListener() {
@@ -146,30 +182,28 @@ public class QLSP extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jButton1)
+                                .addComponent(btnThem)
                                 .addGap(43, 43, 43)
-                                .addComponent(jButton2))
+                                .addComponent(btnSua))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(47, 47, 47)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4))
+                                .addGap(38, 38, 38)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtSoluong, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(txtDonGia, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(txtTen, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(txtMa, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cboLoai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jLabel4)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(txtSoluong, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(37, 37, 37))))
+                                    .addComponent(cboLoai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
-                        .addComponent(jButton3)
+                        .addComponent(btnXoa)
                         .addGap(67, 67, 67)
-                        .addComponent(jButton4)))
+                        .addComponent(btnLamMoi)))
                 .addContainerGap(77, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -194,9 +228,9 @@ public class QLSP extends javax.swing.JFrame {
                             .addComponent(jLabel4)
                             .addComponent(txtSoluong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(102, 102, 102)
-                        .addComponent(jButton1)
+                        .addComponent(btnThem)
                         .addGap(36, 36, 36)
-                        .addComponent(jButton3)
+                        .addComponent(btnXoa)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -204,9 +238,9 @@ public class QLSP extends javax.swing.JFrame {
                             .addComponent(cboLoai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
                         .addGap(63, 63, 63)
-                        .addComponent(jButton2)
+                        .addComponent(btnSua)
                         .addGap(44, 44, 44)
-                        .addComponent(jButton4)
+                        .addComponent(btnLamMoi)
                         .addGap(45, 45, 45))))
         );
 
@@ -244,6 +278,28 @@ public class QLSP extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cboLoaiActionPerformed
 
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+        // TODO add your handling code here:
+        //lấy dữ liệu đc nhập từ form
+        SanPham sanPhamGet = getForm();
+        int rs = spdao.insert(sanPhamGet);
+        if(rs>0){
+            JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công");
+            loadDataToTable();
+            
+        }
+        
+    }//GEN-LAST:event_btnThemActionPerformed
+
+    private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
+        // TODO add your handling code here:
+        txtMa.setText(" ");
+        txtTen.setText(" ");
+        txtDonGia.setText(" ");
+        txtSoluong.setText(" ");
+        cboLoai.getModel().setSelectedItem(" ");
+    }//GEN-LAST:event_btnLamMoiActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -280,11 +336,11 @@ public class QLSP extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLamMoi;
+    private javax.swing.JButton btnSua;
+    private javax.swing.JButton btnThem;
+    private javax.swing.JButton btnXoa;
     private javax.swing.JComboBox<String> cboLoai;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

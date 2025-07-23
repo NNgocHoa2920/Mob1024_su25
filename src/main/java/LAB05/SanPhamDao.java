@@ -15,6 +15,8 @@ import java.sql.*;
 public class SanPhamDao {
     String SELECT_ALL_SANPHAM = "SELECT * FROM SANPHAM";
     String INSERT_SQL = "INSERT INTO SANPHAM (MASANPHAM, TENSANPHAM, DONGIA, SOLUONG, MALOAI) VALUES (?, ?, ?, ?, ?)";
+    String DELETE_SQL = "DELETE FROM SANPHAM WHERE MASANPHAM = ?";
+     String UPDATE_SQL = "UPDATE SANPHAM SET TENSANPHAM = ?, DONGIA = ?, SOLUONG = ?, MALOAI = ? WHERE MASANPHAM = ?";
     
     DbContext db = new DbContext();
     
@@ -61,6 +63,40 @@ public class SanPhamDao {
             conn.close();
         }
         catch( Exception e){
+            System.out.println(e);
+        }
+        return rs;
+    }
+    
+    //3. XOÁ 1 ĐỐI TƯỢNG SẢN PHẨM TRONG BẢNG
+    public int delete(String maSP){
+        int rs=0;// đại diện cho số dòng được xóa thành công
+        try{
+            Connection conn = db.getConnection();
+              PreparedStatement st = conn.prepareStatement(DELETE_SQL);
+              st.setString(1,maSP);
+              rs= st.executeUpdate();//thực thi
+              conn.close();
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        return rs;
+    }
+    //4. UPDATE ĐỐI TƯỢNG SẢN PHẨM TRONG 
+     public int update(SanPham sp) {
+        int rs = 0;
+        try {
+             Connection conn = db.getConnection();
+            PreparedStatement st = conn.prepareStatement(UPDATE_SQL);
+            st.setString(1, sp.getTenSP());
+            st.setDouble(2, sp.getDonGia());
+            st.setInt(3, sp.getSoLuong());
+            st.setInt(4, sp.getLoaiSanPham().getMaLoai());
+            st.setString(5, sp.getMaSanPham());
+
+            rs = st.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
             System.out.println(e);
         }
         return rs;

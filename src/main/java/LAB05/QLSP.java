@@ -56,7 +56,22 @@ public class QLSP extends javax.swing.JFrame {
              model.addElement(loaiSanPham);
          }
      }
-     
+     //HÀM HIỆN THỊ chi tiết ĐỐI TƯỢNG TRONG BẢNG LÊN CÁC Ô TEXT BOX Ở BÊN PHẢI
+     public void showDetail(){
+         //1. xác định vị trí dòng được chọn
+         int index = tblSanPhams.getSelectedRow();
+         //2.Lấy đối tượng sản phẩm của dòng đó
+         SanPham sp = listSanPhams.get(index);
+         //System.out.println(sp.getLoaiSanPham().getTenLoai());
+         //3/ Hiển thị 
+         txtMa.setText(sp.maSanPham);
+         txtTen.setText(sp.tenSP);
+         txtDonGia.setText(Double.toString(sp.donGia));
+         txtSoluong.setText(Integer.toString(sp.soLuong));
+         
+         cboLoai.setSelectedItem(sp.getLoaiSanPham());
+         
+     }
      //HÀM LẤY THÔNG TIN TỪ CÁC CONTROL BÊN PHẢI( Ở CÁC Ô TEXT)
      public SanPham getForm(){
         SanPham sp = new SanPham();
@@ -111,6 +126,11 @@ public class QLSP extends javax.swing.JFrame {
                 "Mã", "Tên", "Loại"
             }
         ));
+        tblSanPhams.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblSanPhamsMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblSanPhams);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -147,8 +167,18 @@ public class QLSP extends javax.swing.JFrame {
         });
 
         btnSua.setText("Sửa");
+        btnSua.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSuaActionPerformed(evt);
+            }
+        });
 
         btnXoa.setText("Xóa");
+        btnXoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaActionPerformed(evt);
+            }
+        });
 
         btnLamMoi.setText("Làm mới");
         btnLamMoi.addActionListener(new java.awt.event.ActionListener() {
@@ -224,9 +254,9 @@ public class QLSP extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(22, 22, 22)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(txtSoluong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtSoluong, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
                         .addGap(102, 102, 102)
                         .addComponent(btnThem)
                         .addGap(36, 36, 36)
@@ -299,6 +329,32 @@ public class QLSP extends javax.swing.JFrame {
         txtSoluong.setText(" ");
         cboLoai.getModel().setSelectedItem(" ");
     }//GEN-LAST:event_btnLamMoiActionPerformed
+
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
+        // TODO add your handling code here:
+        int rs = spdao.delete(txtMa.getText().toLowerCase());// xóa theo mã
+        if(rs>0){
+             JOptionPane.showMessageDialog(this, "Xóa sản phẩm thành công");
+             loadDataToTable();
+        }
+        
+    }//GEN-LAST:event_btnXoaActionPerformed
+
+    private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
+        // TODO add your handling code here:
+        SanPham sp = getForm();
+        int rs= spdao.update(sp);
+        if(rs>0)
+        {
+            JOptionPane.showMessageDialog(this, "Sửa sản phẩm thành công");
+             loadDataToTable();
+        }
+    }//GEN-LAST:event_btnSuaActionPerformed
+
+    private void tblSanPhamsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblSanPhamsMouseClicked
+        // TODO add your handling code here:
+        showDetail();
+    }//GEN-LAST:event_tblSanPhamsMouseClicked
 
     /**
      * @param args the command line arguments
